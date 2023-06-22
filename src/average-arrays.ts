@@ -21,33 +21,45 @@
  */
 
 type AverageNegPosReturn = { posAvg: number | null; negAvg: number | null };
+type SumAndCount = { sum: number; count: number };
 
 function calcAveragesNegativeAndPositive(arr: number[]): AverageNegPosReturn {
-  let posArray: number[] = [];
-  let negArray: number[] = [];
-  let posSum: number | null = null;
-  let negSum: number | null = null;
+  const posArray: number[] = [];
+  const negArray: number[] = [];
 
-  posArray = filterArr(arr).posArr;
-  negArray = filterArr(arr).negArr;
+  for (const num of arr) {
+    if (num < 0) {
+      negArray.push(num);
+    } else if (num > 0) {
+      posArray.push(num);
+    }
+  }
 
-  posSum = reduceArr(posArray);
-  negSum = reduceArr(negArray);
+  let posResult: SumAndCount = { sum: 0, count: 0 };
+  let negResult: SumAndCount = { sum: 0, count: 0 };
 
-  const posAvg = posSum === null ? posSum : posSum / posArray.length;
-  const negAvg = negSum === null ? negSum : negSum / negArray.length;
+  if (posArray.length > 0) {
+    posResult = calcSumAndCount(posArray);
+  }
+  if (negArray.length > 0) {
+    negResult = calcSumAndCount(negArray);
+  }
+
+  const posAvg = posResult.count === 0 ? null : posResult.sum / posResult.count;
+  const negAvg = negResult.count === 0 ? null : negResult.sum / negResult.count;
 
   return { posAvg, negAvg };
 }
 
-function reduceArr(arr: number[]) {
-  return arr.reduce((prev, curr) => prev + curr);
-}
-
-function filterArr(arr: number[]): { posArr: number[]; negArr: number[] } {
-  let pos = arr.filter((el) => el > 0);
-  let neg = arr.filter((el) => el < 0);
-  return { posArr: pos, negArr: neg };
+function calcSumAndCount(arr: number[]): SumAndCount {
+  return arr.reduce(
+    (acc, curr) => {
+      const newSum = acc.sum + curr;
+      const newCount = curr === 0 ? acc.count : acc.count + 1;
+      return { sum: newSum, count: newCount };
+    },
+    { sum: 0, count: 0 }
+  );
 }
 
 export default calcAveragesNegativeAndPositive;
