@@ -23,16 +23,11 @@
 type AverageNegPosReturn = { posAvg: number | null; negAvg: number | null };
 
 function calcAveragesNegativeAndPositive(arr: number[]): AverageNegPosReturn {
-  const posArray: number[] = [];
-  const negArray: number[] = [];
+  let posArray: number[] = [];
+  let negArray: number[] = [];
 
-  for (const num of arr) {
-    if (num < 0) {
-      negArray.push(num);
-    } else if (num > 0) {
-      posArray.push(num);
-    }
-  }
+  posArray = filterArr(posArray).posArr;
+  negArray = filterArr(negArray).negArr;
 
   let posSum: number | null = null;
   let negSum: number | null = null;
@@ -50,16 +45,10 @@ function calcAveragesNegativeAndPositive(arr: number[]): AverageNegPosReturn {
   return { posAvg, negAvg };
 }
 
-function calcSumAndCount(arr: number[]): { sum: number; count: number } {
-  return arr.reduce(
-    (acc, curr) => {
-      acc.sum += curr;
-      if (curr !== 0) {
-        acc.count += 1;
-      }
-    },
-    { sum: 0, count: 0 }
-  );
+function filterArr(arr: number[]): { posArr: number[]; negArr: number[] } {
+  let pos = arr.filter((el) => el > 0);
+  let neg = arr.filter((el) => el < 0);
+  return { posArr: pos, negArr: neg };
 }
 
 export default calcAveragesNegativeAndPositive;
